@@ -106,24 +106,24 @@ function doLookup(entities, options, cb) {
 
     createToken(options, function(err, token) {
 
-      async.each(entities, function (entityObj, next) {
-          if (entityObj.isDomain) {
-              if (domainBlacklistRegex !== null) {
-                  if (domainBlacklistRegex.test(entityObj.value)) {
-                      Logger.debug({domain: entityObj.value}, 'Blocked BlackListed Domain Lookup');
-                      return next(null);
-                  }
-              }
-              _lookupEntityDomain(entityObj, options, token, function (err, result) {
-                  if (err) {
-                      next(err);
-                  } else {
-                      Logger.debug({results: result}, "Logging Domain Results");
-                      lookupResults.push(result);
-                      next(null);
-                  }
-              });
-          } else if (entityObj & _parseCompanies(entityObj, options) === true) {
+        async.each(entities, function (entityObj, next) {
+            if (entityObj.isDomain) {
+                if (domainBlacklistRegex !== null) {
+                    if (domainBlacklistRegex.test(entityObj.value)) {
+                        Logger.debug({domain: entityObj.value}, 'Blocked BlackListed Domain Lookup');
+                        return next(null);
+                    }
+                }
+                _lookupEntityDomain(entityObj, options, token, function (err, result) {
+                    if (err) {
+                        next(err);
+                    } else {
+                        Logger.debug({results: result}, "Logging Domain Results");
+                        lookupResults.push(result);
+                        next(null);
+                    }
+                });
+            } else if (entityObj && _parseCompanies(entityObj, options) === true) {
 
               _lookupEntityCompany(entityObj, options, token, function (err, result) {
                   if (err) {
