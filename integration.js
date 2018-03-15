@@ -166,21 +166,12 @@ function doLookup(entities, options, cb) {
   });
 }
 
-function _parseCompanies(entityObj, options){
+function _parseCompanies(entityObj, options) {
+    //Logger.debug({entity: entityObj}, "Printing out the single entityObj for ParseCompanies");
+    let companies = options.lookupCompanies;
+    let companyStrings = companies.split(",");
 
-  Logger.debug({entity: entityObj}, "Printing out the single entityObj for ParsePeople");
-
-  let channels = entityObj.channels;
-  let channelNames = [];
-  let companies = options.lookupCompanies
-  let companyStrings = companies.split(",");
-
-  channels.forEach(function(channel){
-      channelNames.push(channel.name);
-  });
-
-  let companyReturn = channelNames.some(v => companyStrings.includes(v) >= 0);
-  return companyReturn;
+    return entityObj.channels.some(channelObj => companyStrings.includes(channelObj.name) >= 0);
 }
 
 
