@@ -147,7 +147,7 @@ function doLookup(entities, options, cb) {
                         next(null);
                     }
                 });
-            } else if (entityObj.types.indexOf('string') > 0) {
+            } else if (entityObj && _parsePeople(entityObj, options) === true) {
                 _lookupEntityPerson(entityObj, options, token, function (err, result) {
                     if (err) {
                         next(err);
@@ -181,16 +181,20 @@ function _parseCompanies(entityObj, options) {
     //Logger.debug({entity: entityObj}, "Printing out the single entityObj for ParseCompanies");
     let companies = options.lookupCompanies;
     let companyStrings = companies.split(",");
+    let isParsed = entityObj.channels.some(channelObj => companyStrings.includes(channelObj.name));
 
-    return entityObj.channels.some(channelObj => companyStrings.includes(channelObj.name) >= 0);
+    Logger.debug({companyStrings:companyStrings, channels: entityObj.channels, isParsed: isParsed}, '_parseCompanies');
+    return isParsed;
 }
 
 function _parsePeople(entityObj, options) {
     //Logger.debug({entity: entityObj}, "Printing out the single entityObj for ParseCompanies");
-    let companies = options.lookupPeople;
-    let peopleStrings = companies.split(",");
+    let people = options.lookupPeople;
+    let peopleStrings = people.split(",");
+    let isParsed = entityObj.channels.some(channelObj => peopleStrings.includes(channelObj.name));
 
-    return entityObj.channels.some(channelObj => peopleStrings.includes(channelObj.name) >= 0);
+    Logger.debug({peopleStrings:peopleStrings, channels: entityObj.channels, isParsed: isParsed}, '_parsePeople');
+    return isParsed;
 }
 
 
@@ -215,7 +219,7 @@ function _lookupEntityDomain(entityObj, options, token, cb) {
             return;
         }
 
-        Logger.debug({data: body.content[0]}, "Logging Body Data");
+        //Logger.debug({data: body.content[0]}, "Logging Body Data");
 
         if (_.isEmpty(body.content)) {
             cb(null, {
@@ -232,15 +236,6 @@ function _lookupEntityDomain(entityObj, options, token, cb) {
             });
             return;
         }
-
-        if (_isLookupMiss1(response)) {
-            cb(null, {
-                entity: entityObj,
-                data: null
-            });
-            return;
-        }
-
 
         // The lookup results returned is an array of lookup objects with the following format
         cb(null, {
@@ -279,7 +274,7 @@ function _lookupEntityCompany(entityObj, options, token, cb) {
             cb(errorObject);
             return;
         }
-        Logger.debug({data: body.content[0]}, "Logging Body Data");
+        //Logger.debug({data: body.content[0]}, "Logging Body Data");
 
         if (_.isEmpty(body.content)) {
             cb(null, {
@@ -296,15 +291,6 @@ function _lookupEntityCompany(entityObj, options, token, cb) {
             });
             return;
         }
-
-        if (_isLookupMiss1(response)) {
-            cb(null, {
-                entity: entityObj,
-                data: null
-            });
-            return;
-        }
-
 
         // The lookup results returned is an array of lookup objects with the following format
         cb(null, {
@@ -346,7 +332,7 @@ function _lookupEntityPerson(entityObj, options, token, cb) {
         }
         Logger.debug({entity: entityObj}, "What does the Entity Obj Look like");
 
-        Logger.debug({data: body.content[0]}, "Logging Body Data");
+        //Logger.debug({data: body.content[0]}, "Logging Body Data");
 
         if (_.isEmpty(body.content)) {
             cb(null, {
@@ -363,15 +349,6 @@ function _lookupEntityPerson(entityObj, options, token, cb) {
             });
             return;
         }
-
-        if (_isLookupMiss1(response)) {
-            cb(null, {
-                entity: entityObj,
-                data: null
-            });
-            return;
-        }
-
 
         // The lookup results returned is an array of lookup objects with the following format
         cb(null, {
@@ -420,17 +397,9 @@ function _lookupEntityPersonEmail(entityObj, options, token, cb) {
             return;
         }
 
-        Logger.debug({data: body.content[0]}, "Logging Body Data");
+        //Logger.debug({data: body.content[0]}, "Logging Body Data");
 
         if (_isLookupMiss(response)) {
-            cb(null, {
-                entity: entityObj,
-                data: null
-            });
-            return;
-        }
-
-        if (_isLookupMiss1(response)) {
             cb(null, {
                 entity: entityObj,
                 data: null
@@ -455,11 +424,7 @@ function _lookupEntityPersonEmail(entityObj, options, token, cb) {
 
 
 function _isLookupMiss(response) {
-    return response.statusCode === 404;
-}
-
-function _isLookupMiss1(response) {
-    return response.statusCode === 500;
+    return response.statusCode === 404 || response.statusCode === 500;
 }
 
 function _isApiError(err, response, body, entityValue) {
