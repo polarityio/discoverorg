@@ -133,8 +133,8 @@ module.exports = {
         },
         {
             key: "lookupPeople",
-            name: "Lookup People",
-            description: "list of people names that represent companies, please note the people names are case sensitive",
+            name: "People Channels",
+            description: "list of people names that represent people you wish to lookup in DiscoverOrg, please note the people names are case sensitive",
             default: "",
             type: "text",
             userCanEdit: true,

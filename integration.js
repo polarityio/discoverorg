@@ -185,6 +185,14 @@ function _parseCompanies(entityObj, options) {
     return entityObj.channels.some(channelObj => companyStrings.includes(channelObj.name) >= 0);
 }
 
+function _parsePeople(entityObj, options) {
+    //Logger.debug({entity: entityObj}, "Printing out the single entityObj for ParseCompanies");
+    let companies = options.lookupPeople;
+    let peopleStrings = companies.split(",");
+
+    return entityObj.channels.some(channelObj => peopleStrings.includes(channelObj.name) >= 0);
+}
+
 
 function _lookupEntityDomain(entityObj, options, token, cb) {
     let requestOptions = {
