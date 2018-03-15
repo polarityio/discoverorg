@@ -1,0 +1,154 @@
+<div class="dnsdball">
+    <div class = "name">
+        {{#if block.data.details.fullName}}
+        <i class = "fa fa-info-circle #ADADAD"></i><span class="type"> <b> Company Name: </b> </span>
+          {{block.data.details.fullName}}<a href={{block.data.details.dorgCompanyUrl}}> View in DiscoverOrg </a>
+        {{/if}}
+    </div>
+
+    <div class = "description">
+        {{#if block.data.details.description}}
+        <span class="counts"> Company Description: </span>
+        <b>{{block.data.details.description}}</b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.linkedinUrl}}
+        <span class="balis"> LinkedIn: </span>
+        <b><a href="https://{{block.data.details.linkedinUrl}}"> LinkedIn Profile</a></b>
+        {{/if}}
+    </div>
+
+    <div class = "ownership">
+        {{#if block.data.details.ownershipType}}
+        <span class="Ctimefirst"> Ownership Type: </span>
+        <b>{{block.data.details.ownershipType}}</b>
+        {{/if}}
+    </div>
+
+    <div class = "locations">
+        {{#if block.data.details.numberOfLocations}}
+        <span class="Ctimelast"> Number of Locations: </span>
+        <b>{{block.data.details.numberOfLocations}}</b>
+        {{/if}}
+    </div>
+
+
+    <div class = "departments">
+        {{#if block.data.details.companyDepartments}}
+        {{#each block.data.details.companyDepartments as |data|}}
+        <div class = "companyData">
+        <i class = "fa fa-info-circle #ADADAD"></i><span class = "deptName"> Department Name: </span> <b>{{data.departmentName}}</b>
+        <li><span class = "numEmp"> Number of Employees: </span> <b>{{data.numEmployees}}</b></li>
+        <li><span class = "deptName"> Budget: </span> <b>{{data.budget}}</b></li>
+        </div>
+        {{/each}}
+        {{else}}
+        {{/if}}
+    </div>
+</div>
+
+
+<div class="discorgEmail">
+    <div class = "name">
+        {{#if block.data.details.data.fullName}}
+        <i class = "fa fa-info-circle #ADADAD"></i><span class="type"> <b> Full Name: </b> </span>
+          {{block.data.details.data.fullName}}<a href="https://go.discoverydb.com/eui/#/person/{{block.data.details.data.id}}"> View in DiscoverOrg </a>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.notes}}
+        <span class="balis"> Notes: </span>
+        <b>{{block.data.details.data.notes}}"> Notes: </b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.linkedInUrl}}
+        <span class="balis"> LinkedIn: </span>
+        <b><a href="{{block.data.details.data.linkedInUrl}}"> View in LinkedIn </a></b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.twitterHandle}}
+        <span class="balis"> Twitter Handle: </span>
+        <b>{{block.data.details.data.twitterHandle}}</b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.company.fullName}}
+        <span class="counts"> Company: </span>
+        <b>{{block.data.details.data.company.fullName}}</b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.company.numEmployees}}
+        <span class="counts"> Number of Employees: </span>
+        <b>{{block.data.details.data.company.numEmployees}}</b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.company.revenue}}
+        <span class="counts"> Revenue: </span>
+        <b>{{block.data.details.data.company.revenue}}</b>
+        {{/if}}
+    </div>
+
+    <div class = "linkedin">
+        {{#if block.data.details.data.company.industry}}
+        <span class="counts"> Industry: </span>
+        <b>{{block.data.details.data.company.industry}}</b>
+        {{/if}}
+    </div>
+
+
+
+
+    <div class = "departments">
+        {{#if block.data.details.data.departments}}
+        {{#each block.data.details.data.departments as |data|}}
+        <div class = "companyData">
+        <i class = "fa fa-info-circle #ADADAD"></i><span class = "deptName"> Departments: </span>
+        {{#if data.displayName}}
+        <li><span class = "numEmp"> Department Name: </span> <b>{{data.displayName}}</b></li>
+        {{/if}}
+        {{#if data.description}}
+        <li><span class = "numEmp"> Department Description: </span> <b>{{data.description}}</b></li>
+        {{/if}}
+        </div>
+        {{/each}}
+        {{else}}
+        {{/if}}
+    </div>
+
+    <div class = "jobfunctions">
+        {{#if block.data.details.data.jobFunctions}}
+        {{#each block.data.details.data.jobFunctions as |data|}}
+        <div class = "companyData">
+        <i class = "fa fa-info-circle #ADADAD"></i><span class = "deptName"> Job Functions: </span> <b>{{data.departmentName}}</b>
+        {{#if data.displayName}}
+        <li><span class = "numEmp"> Jobs: </span> <b>{{data.displayName}}</b></li>
+        {{/if}}
+        {{#if data.description}}
+        <li><span class = "numEmp"> Job Description: </span> <b>{{data.description}}</b></li>
+        {{/if}}
+        </div>
+        {{/each}}
+        {{else}}
+        {{/if}}
+    </div>
+
+    <div class = "departments">
+        {{#if block.data.details.data.reportsTo.fullName}}
+        <span class="Ctimefirst"> Reports To: </span>
+        <b>{{block.data.details.data.reportsTo.fullName}}</b>
+          <li><span class = "numEmp"> Job Title: </span> <b>{{block.data.details.data.reportsTo.title}}</b></li>
+        {{/if}}
+    </div>
+</div>
