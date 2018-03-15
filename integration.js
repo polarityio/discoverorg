@@ -14,6 +14,9 @@ let domainBlacklistRegex = null;
 
 const MAX_PARALLEL_LOOKUPS = 10;
 
+// Global AuthToken Cache
+const authTokens = new Map();
+
 function startup(logger) {
     Logger = logger;
     let defaults = {};
@@ -41,40 +44,50 @@ function startup(logger) {
     requestWithDefaults = request.defaults(defaults);
 }
 
+
+function _createAuthKey(options){
+    return options.username + options.password + options.apiKey;
+}
+
 /**
  *
  * @param entities
  * @param options
  * @param cb
  */
-
-
 var createToken = function (options, cb) {
+    let authKey = _createAuthKey(options);
+    if(authTokens.has(authKey)){
+        Logger.debug({user: options.username}, 'Using Cached Auth Token');
+        cb(null, authTokens.get(authKey));
+        return;
+    }
 
-  let requestOptions = {
-               uri: 'https://papi.discoverydb.com/papi/login',
-               method: 'POST',
-               body: {
-                  "username": options.username,
-                  "password": options.password,
-                  "partnerKey": options.apiKey
-                },
-                json: true
-              }
+    let requestOptions = {
+        uri: 'https://papi.discoverydb.com/papi/login',
+        method: 'POST',
+        body: {
+            "username": options.username,
+            "password": options.password,
+            "partnerKey": options.apiKey
+        },
+        json: true
+    };
 
-     requestWithDefaults(requestOptions, function (err, response, body) {
+    requestWithDefaults(requestOptions, function (err, response, body) {
         let errorObject = _isApiError(err, response, body);
         if (errorObject) {
-           cb(errorObject);
-           return;
+            cb(errorObject);
+            return;
         }
 
-       cb(null, response.headers['x-auth-token']);
-       });
-}
+        let authToken = response.headers['x-auth-token'];
+        authTokens.set(authKey, authToken);
+        cb(null, authToken);
+    });
+};
 
-
-function _setupRegexBlacklists(options){
+function _setupRegexBlacklists(options) {
     if (options.domainBlacklistRegex !== previousDomainRegexAsString && options.domainBlacklistRegex.length === 0) {
         Logger.debug("Removing Domain Blacklist Regex Filtering");
         previousDomainRegexAsString = '';
@@ -91,12 +104,13 @@ function _setupRegexBlacklists(options){
 
 function doLookup(entities, options, cb) {
 
+    Logger.debug({options: options}, 'Options');
     _setupRegexBlacklists(options);
 
     let lookupResults = [];
     let entityObj = entities;
 
-    Logger.debug({entity: entityObj}, "Entity Objects");
+    //Logger.debug({entity: entityObj}, "Entity Objects");
 
 
     if (typeof(options.apiKey) !== 'string' || options.apiKey.length === 0) {
@@ -104,7 +118,7 @@ function doLookup(entities, options, cb) {
         return;
     }
 
-    createToken(options, function(err, token) {
+    createToken(options, function (err, token) {
 
         async.each(entities, function (entityObj, next) {
             if (entityObj.isDomain) {
@@ -124,46 +138,43 @@ function doLookup(entities, options, cb) {
                     }
                 });
             } else if (entityObj && _parseCompanies(entityObj, options) === true) {
-
-              _lookupEntityCompany(entityObj, options, token, function (err, result) {
-                  if (err) {
-                      next(err);
-                  } else {
-                      Logger.debug({results: result}, "Logging String Results");
-                      lookupResults.push(result);
-                      next(null);
-                  }
-              });
-          } else if (entityObj) {
-              _lookupEntityPerson(entityObj, options, token, function (err, result) {
-                  if (err) {
-                      next(err);
-                  } else {
-                      Logger.debug({results: result}, "Logging String Results");
-                      lookupResults.push(result);
-                      next(null);
-                  }
-              });
-          }else if (entityObj.isEmail) {
-              _lookupEntityPersonEmail(entityObj, options, token, function (err, result) {
-                  if (err) {
-                      next(err);
-                  } else {
-                      Logger.debug({results: result}, "Logging Email Results");
-                      lookupResults.push(result);
-                      next(null);
-                  }
-              });
-          }else {
-              lookupResults.push({entity: entityObj, data: null}); //Cache the missed results
-              next(null);
-          }
-      }, function (err) {
-          cb(err, lookupResults);
-      });
-
-
-  });
+                _lookupEntityCompany(entityObj, options, token, function (err, result) {
+                    if (err) {
+                        next(err);
+                    } else {
+                        Logger.debug({results: result}, "Logging Company Results");
+                        lookupResults.push(result);
+                        next(null);
+                    }
+                });
+            } else if (entityObj.types.indexOf('string') > 0) {
+                _lookupEntityPerson(entityObj, options, token, function (err, result) {
+                    if (err) {
+                        next(err);
+                    } else {
+                        Logger.debug({results: result}, "Logging Person Results");
+                        lookupResults.push(result);
+                        next(null);
+                    }
+                });
+            } else if (entityObj.isEmail) {
+                _lookupEntityPersonEmail(entityObj, options, token, function (err, result) {
+                    if (err) {
+                        next(err);
+                    } else {
+                        Logger.debug({results: result}, "Logging Email Results");
+                        lookupResults.push(result);
+                        next(null);
+                    }
+                });
+            } else {
+                lookupResults.push({entity: entityObj, data: null}); //Cache the missed results
+                next(null);
+            }
+        }, function (err) {
+            cb(err, lookupResults);
+        });
+    });
 }
 
 function _parseCompanies(entityObj, options) {
@@ -176,18 +187,17 @@ function _parseCompanies(entityObj, options) {
 
 
 function _lookupEntityDomain(entityObj, options, token, cb) {
-
     let requestOptions = {
-                 uri: 'https://papi.discoverydb.com/papi/v1/search/companies',
-                 method: 'POST',
-                 headers: {'X-AUTH-TOKEN': token},
-                 body: {
-                 	  "companyCriteria": {
-                 		   "emailDomains": [entityObj.value]
-                 	}
-                 },
-                 json: true
-             };
+        uri: 'https://papi.discoverydb.com/papi/v1/search/companies',
+        method: 'POST',
+        headers: {'X-AUTH-TOKEN': token},
+        body: {
+            "companyCriteria": {
+                "emailDomains": [entityObj.value]
+            }
+        },
+        json: true
+    };
 
 
     requestWithDefaults(requestOptions, function (err, response, body) {
@@ -199,12 +209,12 @@ function _lookupEntityDomain(entityObj, options, token, cb) {
 
         Logger.debug({data: body.content[0]}, "Logging Body Data");
 
-        if(_.isEmpty(body.content)){
-          cb(null, {
-            entity: entityObj,
-            data: null
-          });
-          return;
+        if (_.isEmpty(body.content)) {
+            cb(null, {
+                entity: entityObj,
+                data: null
+            });
+            return;
         }
 
         if (_isLookupMiss(response)) {
@@ -242,17 +252,17 @@ function _lookupEntityDomain(entityObj, options, token, cb) {
 function _lookupEntityCompany(entityObj, options, token, cb) {
 
     let requestOptions = {
-                 uri: 'https://papi.discoverydb.com/papi/v1/search/companies',
-                 method: 'POST',
-                 headers: {'X-AUTH-TOKEN': token},
-                 body: {
-	                     "companyCriteria":{
-		                       "queryString": entityObj.value,
-		                         "queryStringApplication": ["FULL_NAME"]
-	                          }
-                 },
-                 json: true
-             };
+        uri: 'https://papi.discoverydb.com/papi/v1/search/companies',
+        method: 'POST',
+        headers: {'X-AUTH-TOKEN': token},
+        body: {
+            "companyCriteria": {
+                "queryString": entityObj.value,
+                "queryStringApplication": ["FULL_NAME"]
+            }
+        },
+        json: true
+    };
 
 
     requestWithDefaults(requestOptions, function (err, response, body) {
@@ -263,12 +273,12 @@ function _lookupEntityCompany(entityObj, options, token, cb) {
         }
         Logger.debug({data: body.content[0]}, "Logging Body Data");
 
-        if(_.isEmpty(body.content)){
-          cb(null, {
-            entity: entityObj,
-            data: null
-          });
-          return;
+        if (_.isEmpty(body.content)) {
+            cb(null, {
+                entity: entityObj,
+                data: null
+            });
+            return;
         }
 
         if (_isLookupMiss(response)) {
@@ -306,17 +316,17 @@ function _lookupEntityCompany(entityObj, options, token, cb) {
 function _lookupEntityPerson(entityObj, options, token, cb) {
 
     let requestOptions = {
-                 uri: 'https://papi.discoverydb.com/papi/v1/search/persons',
-                 method: 'POST',
-                 headers: {'X-AUTH-TOKEN': token},
-                 body: {
-	                  "personCriteria":{
-		                    "queryString": entityObj.value,
-		                      "queryStringApplication": ["FULL_NAME"]
-	                         }
-                         },
-                 json: true
-             };
+        uri: 'https://papi.discoverydb.com/papi/v1/search/persons',
+        method: 'POST',
+        headers: {'X-AUTH-TOKEN': token},
+        body: {
+            "personCriteria": {
+                "queryString": entityObj.value,
+                "queryStringApplication": ["FULL_NAME"]
+            }
+        },
+        json: true
+    };
 
     Logger.debug({request: requestOptions}, "What does the request look like");
 
@@ -330,12 +340,12 @@ function _lookupEntityPerson(entityObj, options, token, cb) {
 
         Logger.debug({data: body.content[0]}, "Logging Body Data");
 
-        if(_.isEmpty(body.content)){
-          cb(null, {
-            entity: entityObj,
-            data: null
-          });
-          return;
+        if (_.isEmpty(body.content)) {
+            cb(null, {
+                entity: entityObj,
+                data: null
+            });
+            return;
         }
 
         if (_isLookupMiss(response)) {
@@ -374,17 +384,17 @@ function _lookupEntityPerson(entityObj, options, token, cb) {
 function _lookupEntityPersonEmail(entityObj, options, token, cb) {
 
     let requestOptions = {
-                 uri: 'https://papi.discoverydb.com/papi/v1/search/persons',
-                 method: 'POST',
-                 headers: {'X-AUTH-TOKEN': token},
-                 body: {
-	                  "personCriteria":{
-		                    "queryString": entityObj.value,
-		                      "queryStringApplication": ["EMAIL"]
-	                       }
-                       },
-                 json: true
-             };
+        uri: 'https://papi.discoverydb.com/papi/v1/search/persons',
+        method: 'POST',
+        headers: {'X-AUTH-TOKEN': token},
+        body: {
+            "personCriteria": {
+                "queryString": entityObj.value,
+                "queryStringApplication": ["EMAIL"]
+            }
+        },
+        json: true
+    };
 
 
     requestWithDefaults(requestOptions, function (err, response, body) {
@@ -394,12 +404,12 @@ function _lookupEntityPersonEmail(entityObj, options, token, cb) {
             return;
         }
 
-        if(_.isEmpty(body.content)){
-          cb(null, {
-            entity: entityObj,
-            data: null
-          });
-          return;
+        if (_.isEmpty(body.content)) {
+            cb(null, {
+                entity: entityObj,
+                data: null
+            });
+            return;
         }
 
         Logger.debug({data: body.content[0]}, "Logging Body Data");
@@ -434,7 +444,6 @@ function _lookupEntityPersonEmail(entityObj, options, token, cb) {
         });
     });
 }
-
 
 
 function _isLookupMiss(response) {
