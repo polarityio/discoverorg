@@ -22,7 +22,7 @@ module.exports = {
      * @type String
      * @optional
      */
-    description: "Company lookup information for DisciverOrg",
+    description: "Company lookup information for DiscoverOrg",
     entityTypes: ['string', 'domain', 'email'],
     /**
      * An array of style files (css or less) that will be included for your integration. Any styles specified in
