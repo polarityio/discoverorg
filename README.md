@@ -1,6 +1,6 @@
 # Polarity DiscoverOrg Integration
 
-![image](https://user-images.githubusercontent.com/22529325/37523909-aecede1a-28fe-11e8-8ffc-49d89563598c.png)
+![image](https://user-images.githubusercontent.com/22529325/41348839-e6797dac-6edb-11e8-9315-baa0008aef75.png)
 
 Polarity's DiscoverORg integration allows users to access information on companies, domains, emails and people from DiscoverOrg!
 
