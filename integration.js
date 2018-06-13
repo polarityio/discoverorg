@@ -220,8 +220,14 @@ function _lookupEntityDomain(entityObj, options, token, cb) {
         }
 
         //Logger.debug({data: body.content[0]}, "Logging Body Data");
-
-        if (_.isEmpty(body.content)) {
+        if (_.isNull(body)){
+          cb(null, {
+              entity: entityObj,
+              data: null
+          });
+          return;
+        }
+        if (_.isEmpty(body) || _.isEmpty(body.content)) {
             cb(null, {
                 entity: entityObj,
                 data: null
@@ -274,9 +280,17 @@ function _lookupEntityCompany(entityObj, options, token, cb) {
             cb(errorObject);
             return;
         }
+
+        if (_.isNull(body)){
+          cb(null, {
+              entity: entityObj,
+              data: null
+          });
+          return;
+        }
         //Logger.debug({data: body.content[0]}, "Logging Body Data");
 
-        if (_.isEmpty(body.content)) {
+        if (_.isEmpty(body) || _.isEmpty(body.content)) {
             cb(null, {
                 entity: entityObj,
                 data: null
@@ -334,7 +348,15 @@ function _lookupEntityPerson(entityObj, options, token, cb) {
 
         //Logger.debug({data: body.content[0]}, "Logging Body Data");
 
-        if (_.isEmpty(body.content)) {
+        if (_.isNull(body)){
+          cb(null, {
+              entity: entityObj,
+              data: null
+          });
+          return;
+        }
+
+        if (_.isEmpty(body) || _.isEmpty(body.content)) {
             cb(null, {
                 entity: entityObj,
                 data: null
@@ -389,7 +411,15 @@ function _lookupEntityPersonEmail(entityObj, options, token, cb) {
             return;
         }
 
-        if (_.isEmpty(body.content)) {
+        if (_.isNull(body)){
+          cb(null, {
+              entity: entityObj,
+              data: null
+          });
+          return;
+        }
+
+        if (_.isEmpty(body) || _.isEmpty(body.content)) {
             cb(null, {
                 entity: entityObj,
                 data: null
