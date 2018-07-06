@@ -114,31 +114,31 @@ module.exports = {
             "adminOnly": false
         },
         {
-            key: "domainBlacklistRegex",
-            name: "Domain Black List Regex",
-            description: "Domains that match the given regex will not be looked up (if blank, no domains will be black listed)",
-            default: "",
-            type: "text",
-            userCanEdit: false,
-            adminOnly: false
+            "key": "domainBlacklistRegex",
+            "name": "Domain Black List Regex",
+            "description": "Domains that match the given regex will not be looked up (if blank, no domains will be black listed)",
+            "default": "",
+            "type": "text",
+            "userCanEdit": false,
+            "adminOnly": false
         },
         {
-            key: "lookupCompanies",
-            name: "Company Channels",
-            description: "list of channel names that represent companies, please note the channel names are case sensitive",
-            default: "",
-            type: "text",
-            userCanEdit: true,
-            adminOnly: false
+            "key": "lookupCompanies",
+            "name": "Company Channels",
+            "description": "list of channel names that represent companies, please note the channel names are case sensitive",
+            "default": "",
+            "type": "text",
+            "userCanEdit": true,
+            "adminOnly": false
         },
         {
-            key: "lookupPeople",
-            name: "People Channels",
-            description: "list of people names that represent people you wish to lookup in DiscoverOrg, please note the people names are case sensitive",
-            default: "",
-            type: "text",
-            userCanEdit: true,
-            adminOnly: false
+            "key": "lookupPeople",
+            "name": "People Channels",
+            "description": "list of people names that represent people you wish to lookup in DiscoverOrg, please note the people names are case sensitive",
+            "default": "",
+            "type": "text",
+            "userCanEdit": true,
+            "adminOnly": false
         }
 
     ]
