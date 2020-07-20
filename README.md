@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/22529325/41348839-e6797dac-6edb-11e8-9315-baa0008aef75.png)
 
-Polarity's DiscoverORg integration allows users to access information on companies, domains, emails and people from DiscoverOrg!
+Polarity's DiscoverOrg integration allows users to access information on companies, domains, emails and people from DiscoverOrg!
 
 To learn more about DiscoverOrg, please visit the [official website](https://discoverorg.com/).
 
@@ -19,14 +19,14 @@ The username of the DiscoverOrg user you want the integration to authenticate as
 ### Password
 The password for the provided username you want the integration to authenticate as.
 
-### Domain Blacklist Regex
-You can provide a regular expression to blacklist certain domains from being looked up in DiscoverOrg.
+### Ignored Domain Regex
+You can provide a regular expression never lookup certain domains in DiscoverOrg.
 
 ### Company Channels
-Channels that are whitelisted to lookup company information, please note that the channel names are case sensitive.
+Channels that are set to lookup company information, please note that the channel names are case sensitive.
 
 ### Person Channels
-Channels that are whitelisted to lookup people information, please note that the channel names are case sensitive.
+Channels that are set to lookup people information, please note that the channel names are case sensitive.
 
 ## Polarity
 

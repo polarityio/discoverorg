@@ -10,7 +10,7 @@ let fs = require('fs');
 let Logger;
 let requestWithDefaults;
 let previousDomainRegexAsString = '';
-let domainBlacklistRegex = null;
+let domainBlocklistRegex = null;
 
 const MAX_PARALLEL_LOOKUPS = 10;
 
@@ -87,16 +87,16 @@ var createToken = function (options, cb) {
     });
 };
 
-function _setupRegexBlacklists(options) {
-    if (options.domainBlacklistRegex !== previousDomainRegexAsString && options.domainBlacklistRegex.length === 0) {
-        Logger.debug("Removing Domain Blacklist Regex Filtering");
+function _setupRegexBlocklists(options) {
+    if (options.domainBlocklistRegex !== previousDomainRegexAsString && options.domainBlocklistRegex.length === 0) {
+        Logger.debug("Removing Domain Blocklist Regex Filtering");
         previousDomainRegexAsString = '';
-        domainBlacklistRegex = null;
+        domainBlocklistRegex = null;
     } else {
-        if (options.domainBlacklistRegex !== previousDomainRegexAsString) {
-            previousDomainRegexAsString = options.domainBlacklistRegex;
-            Logger.debug({domainBlacklistRegex: previousDomainRegexAsString}, "Modifying Domain Blacklist Regex");
-            domainBlacklistRegex = new RegExp(options.domainBlacklistRegex, 'i');
+        if (options.domainBlocklistRegex !== previousDomainRegexAsString) {
+            previousDomainRegexAsString = options.domainBlocklistRegex;
+            Logger.debug({domainBlocklistRegex: previousDomainRegexAsString}, "Modifying Domain Blocklist Regex");
+            domainBlocklistRegex = new RegExp(options.domainBlocklistRegex, 'i');
         }
     }
 }
@@ -105,7 +105,7 @@ function _setupRegexBlacklists(options) {
 function doLookup(entities, options, cb) {
 
     Logger.debug({options: options}, 'Options');
-    _setupRegexBlacklists(options);
+    _setupRegexBlocklists(options);
 
     let lookupResults = [];
     let entityObj = entities;
@@ -122,9 +122,9 @@ function doLookup(entities, options, cb) {
 
         async.each(entities, function (entityObj, next) {
             if (entityObj.isDomain) {
-                if (domainBlacklistRegex !== null) {
-                    if (domainBlacklistRegex.test(entityObj.value)) {
-                        Logger.debug({domain: entityObj.value}, 'Blocked BlackListed Domain Lookup');
+                if (domainBlocklistRegex !== null) {
+                    if (domainBlocklistRegex.test(entityObj.value)) {
+                        Logger.debug({domain: entityObj.value}, 'Blocked BlockListed Domain Lookup');
                         return next(null);
                     }
                 }
