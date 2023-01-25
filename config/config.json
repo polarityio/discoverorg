@@ -1,0 +1,91 @@
+{
+  "name": "DiscoverOrg",
+  "acronym": "DISC",
+  "defaultColor": "light-blue",
+  "description": "Company lookup information for DiscoverOrg",
+  "entityTypes": ["string", "domain", "email"],
+  "styles": ["./styles/discover.less"],
+  "block": {
+    "component": {
+      "file": "./components/discover-block.js"
+    },
+    "template": {
+      "file": "./templates/discover-block.hbs"
+    }
+  },
+  "summary": {
+    "component": {
+      "file": "./components/discover-summary.js"
+    },
+    "template": {
+      "file": "./templates/discover-summary.hbs"
+    }
+  },
+  "request": {
+    "cert": "",
+    "key": "",
+    "passphrase": "",
+    "ca": "",
+    "proxy": "",
+    "rejectUnauthorized": true
+  },
+  "logging": {
+    "level": "info"
+  },
+  "options": [
+    {
+      "key": "apiKey",
+      "name": "DiscoverOrg Partner API Key",
+      "description": "Your DiscoverOrg API Key.",
+      "default": "",
+      "type": "text",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "username",
+      "name": "DiscoverOrg Username",
+      "description": "Your DiscoverOrg username.",
+      "default": "",
+      "type": "text",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "password",
+      "name": "DiscoverOrg Password",
+      "description": "Your DiscoverOrg password.",
+      "default": "",
+      "type": "password",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "domainBlocklistRegex",
+      "name": "Ignored Domain Regex",
+      "description": "Domains that match the given regex will not be looked up.",
+      "default": "",
+      "type": "text",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "lookupCompanies",
+      "name": "Company Channels",
+      "description": "list of channel names that represent companies, please note the channel names are case sensitive",
+      "default": "",
+      "type": "text",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "lookupPeople",
+      "name": "People Channels",
+      "description": "list of people names that represent people you wish to lookup in DiscoverOrg, please note the people names are case sensitive",
+      "default": "",
+      "type": "text",
+      "userCanEdit": true,
+      "adminOnly": false
+    }
+  ]
+}
