@@ -1,15 +1,10 @@
 {
   "name": "DiscoverOrg",
   "acronym": "DISC",
+  "defaultColor": "light-blue",
   "description": "Company lookup information for DiscoverOrg",
-  "entityTypes": [
-    "string",
-    "domain",
-    "email"
-  ],
-  "styles": [
-    "./styles/discover.less"
-  ],
+  "entityTypes": ["string", "domain", "email"],
+  "styles": ["./styles/discover.less"],
   "block": {
     "component": {
       "file": "./components/discover-block.js"
