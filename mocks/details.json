@@ -1,0 +1,68 @@
+{
+  "fullName": "Acme Corporation",
+  "description": "Leading provider of innovative technology solutions for enterprise customers",
+  "id": 123456,
+  "dorgCompanyUrl": "https://go.discoverydb.com/eui/#/company/123456",
+  "linkedinUrl": "www.linkedin.com/company/acme-corp",
+  "ownershipType": "Public",
+  "numberOfLocations": 12,
+  "revenue": "$100M - $500M",
+  "numEmployees": 1500,
+  "industry": "Computer Software",
+  "companyDepartments": [
+    {
+      "departmentName": "Engineering",
+      "numEmployees": 450,
+      "budget": "$15M"
+    },
+    {
+      "departmentName": "Sales",
+      "numEmployees": 250,
+      "budget": "$8M"
+    }
+  ],
+  "headquarters": {
+    "street": "123 Tech Blvd",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94105",
+    "country": "United States"
+  },
+  "data": {
+    "id": 789012,
+    "fullName": "John Smith",
+    "title": "Chief Technology Officer",
+    "email": "john.smith@acmecorp.com",
+    "phone": "+1-415-555-0123",
+    "linkedinUrl": "www.linkedin.com/in/johnsmith",
+    "notes": "Key decision maker for technology purchases",
+    "reportsTo": {
+      "id": 789001,
+      "fullName": "Jane Doe",
+      "title": "Chief Executive Officer"
+    },
+    "company": {
+      "id": 123456,
+      "fullName": "Acme Corporation",
+      "numEmployees": 1500,
+      "revenue": "$100M - $500M",
+      "industry": "Computer Software",
+      "address": {
+        "city": "San Francisco",
+        "state": "CA",
+        "country": "United States"
+      }
+    },
+    "department": "Engineering",
+    "managementLevel": "C-Level"
+  },
+  "internalMetadata": {
+    "lastUpdated": "2024-01-15T10:30:00Z",
+    "dataSource": "DiscoverOrg API v1",
+    "qualityScore": 95
+  },
+  "additionalInfo": {
+    "technologies": ["Salesforce", "AWS", "Microsoft Azure"],
+    "partnerships": ["Amazon Web Services", "Google Cloud"]
+  }
+}

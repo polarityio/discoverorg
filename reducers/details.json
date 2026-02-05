@@ -1,0 +1,31 @@
+{
+  "root": {
+    "path": "",
+    "on_null": "return_empty"
+  },
+  "pipeline": [
+    {
+      "op": "copy",
+      "from": "fullName",
+      "to": "reduced_results.company_name"
+    },
+    {
+      "op": "copy",
+      "from": "description",
+      "to": "reduced_results.company_description"
+    },
+    {
+      "op": "copy",
+      "from": "data.company.fullName",
+      "to": "reduced_results.person_company_name"
+    },
+    {
+      "op": "prune",
+      "strategy": "empty_values",
+      "target": "reduced_results"
+    }
+  ],
+  "output": {
+    "result": "$working.reduced_results"
+  }
+}
